@@ -280,8 +280,49 @@ function goToQuiz(){quizState={correct:0,wrong:0,current:null,answered:false,cou
 function nextQuizRound(){if(quizState.count>=quizState.max){const earned=Math.max(0,quizState.correct-quizState.wrong);document.getElementById('quizEmoji').textContent='🎉';document.getElementById('quizQuestion').textContent='测验完成！';document.getElementById('quizOptions').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:20px"><div style="font-size:2.5rem;margin-bottom:8px">'+(quizState.correct>=7?'🏆':quizState.correct>=5?'😊':'💪')+'</div><div style="font-size:1.2rem;font-weight:700">答对 '+quizState.correct+'/'+quizState.max+' 题</div><div style="color:var(--text-light);margin:8px 0">获得 '+earned+' 颗星星 ⭐</div><button class="quiz-next" onclick="goToQuiz()">再来一轮 🔄</button><button class="back-btn" onclick="showSection(\x27home\x27)" style="margin-top:8px">← 返回今日任务</button></div>';document.getElementById('quizNextBtn').classList.add('hidden');if(!S.completedDays[TODAY]||!S.completedDays[TODAY].quiz){markTask('quiz');if(earned>0)addStars(earned);}return;}quizState.answered=false;quizState.count++;document.getElementById('quizProgress').textContent=quizState.count+'/'+quizState.max;document.getElementById('quizProgressBar').style.width=(quizState.count/quizState.max*100)+'%';document.getElementById('quizNextBtn').classList.add('hidden');const correct=quizState.pool[quizState.count-1];if(!correct){const r=allVocabFlat[Math.floor(Math.random()*allVocabFlat.length)];quizState.pool[quizState.count-1]=r;quizState.current=r;}else{quizState.current=correct;}const others=allVocabFlat.filter(w=>w.en!==quizState.current.en).sort(()=>Math.random()-0.5).slice(0,3);const options=[quizState.current,...others].sort(()=>Math.random()-0.5);document.getElementById('quizEmoji').textContent=quizState.current.emoji;document.getElementById('quizQuestion').textContent='这是什么？（第 '+quizState.count+' 题）';document.getElementById('quizOptions').innerHTML=options.map(o=>'<button class="quiz-option" onclick="answerQuiz(\x27'+o.en+'\x27,this)">'+o.en+'</button>').join('');}
 function answerQuiz(correctEn,btnEl){if(quizState.answered)return;quizState.answered=true;const correct=quizState.current.en===correctEn;if(correct){quizState.correct++;btnEl.classList.add('correct');document.getElementById('quizCorrect').textContent=quizState.correct;speak('Great! '+quizState.current.en,0.85);showToast('✅ 答对了！太棒了！');addStars(1);}else{quizState.wrong++;btnEl.classList.add('wrong');document.getElementById('quizWrong').textContent=quizState.wrong;document.querySelectorAll('#quizOptions .quiz-option').forEach(b=>{if(b.textContent===quizState.current.en)b.classList.add('correct');});speak(quizState.current.en,0.85);showToast('❌ 正确答案是：'+quizState.current.en);}document.getElementById('quizStars').textContent=Math.max(0,quizState.correct-quizState.wrong);document.getElementById('quizNextBtn').classList.remove('hidden');document.querySelectorAll('#quizOptions .quiz-option').forEach(b=>b.style.pointerEvents='none');}
 function goBackFromQuiz(){showSection('home');}
-function speak(text,rate){return new Promise(function(resolve){var url='https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=en&q='+encodeURIComponent(text);var a=new Audio(url);a.playbackRate=rate||0.85;a.onended=resolve;a.onerror=function(){resolve()};a.play().catch(function(){resolve()});});}
-function addStars(n){S.stars=(S.stars||0)+n;saveStorage(S);document.getElementById('starCount').textContent=S.stars;if(n>=3)setTimeout(celebrate,200);}
+function speak(text,rate){
+  return new Promise(function(resolve){
+    // Edge TTS — 国内可用，免费
+    var ssml='<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="en-US">'
+           +'<voice name="en-US-JennyNeural">'+text+'</voice></speak>';
+    var url='https://api-edge.cognitive.microsofttranslator.com/tts/v1/0/edge?format=audio-24khz-48kbit-mono-mp3';
+    // 先尝试 Edge TTS
+    tryEdge(url,ssml,resolve);
+  });
+}
+
+function tryEdge(url,ssml,resolve){
+  var xhr=new XMLHttpRequest();
+  xhr.open('POST',url,true);
+  xhr.responseType='blob';
+  xhr.setRequestHeader('Content-Type','application/ssml+xml');
+  xhr.setRequestHeader('User-Agent','Mozilla/5.0');
+  xhr.onload=function(){
+    if(xhr.status===200){
+      var blobUrl=URL.createObjectURL(xhr.response);
+      var a=new Audio(blobUrl);
+      a.playbackRate=0.85;
+      a.onended=function(){URL.revokeObjectURL(blobUrl);resolve();};
+      a.play().catch(function(){resolve();});
+    }else{
+      // 降级到 Google TTS
+      fallbackGoogle(text,resolve);
+    }
+  };
+  xhr.onerror=function(){fallbackGoogle(text,resolve);};
+  xhr.send(ssml);
+}
+
+function fallbackGoogle(text,resolve){
+  var url='https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=en&q='
+         +encodeURIComponent(text);
+  var a=new Audio(url);
+  a.playbackRate=0.85;
+  a.onended=resolve;
+  a.onerror=function(){resolve();};
+  a.play().catch(function(){resolve();});
+}
+addStars(n){S.stars=(S.stars||0)+n;saveStorage(S);document.getElementById('starCount').textContent=S.stars;if(n>=3)setTimeout(celebrate,200);}
 function celebrate(){const el=document.getElementById('celebration');const colors=['#FF6B6B','#4ECDC4','#FFE66D','#A78BFA','#FB923C','#34D399','#60A5FA'];for(let i=0;i<50;i++){const c=document.createElement('div');c.className='confetti';c.style.left=Math.random()*100+'%';c.style.top=-(Math.random()*40)+'px';c.style.background=colors[Math.floor(Math.random()*colors.length)];c.style.animationDelay=Math.random()*0.8+'s';c.style.animationDuration=(1.5+Math.random()*2)+'s';el.appendChild(c);setTimeout(()=>c.remove(),3000);}}
 function showToast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2200);}
 function showSection(name){document.querySelectorAll('[id^="section-"]').forEach(el=>el.classList.add('hidden'));const sec=document.getElementById('section-'+name);if(sec)sec.classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'});if(name==='home')renderHome();}
