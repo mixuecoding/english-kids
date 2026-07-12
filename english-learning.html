@@ -1,0 +1,293 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌟 英语启蒙小课堂 - 每日学习计划</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--pink:#FF6B6B;--teal:#4ECDC4;--yellow:#FFE66D;--purple:#A78BFA;--orange:#FB923C;--green:#34D399;--blue:#60A5FA;--bg:#FFF8F0;--text:#2D3436;--text-light:#636E72;--shadow:0 4px 20px rgba(0,0,0,0.08);--radius:24px;--radius-sm:14px}
+body{font-family:-apple-system,"Microsoft YaHei","PingFang SC",sans-serif;background:var(--bg);color:var(--text);min-height:100vh;background-image:radial-gradient(circle at 10% 20%,rgba(255,107,107,0.06) 0%,transparent 50%),radial-gradient(circle at 90% 80%,rgba(78,205,196,0.06) 0%,transparent 50%)}
+.header{background:white;padding:14px 20px;box-shadow:0 2px 16px rgba(0,0,0,0.06);position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.header .logo{font-size:1.3rem;font-weight:800;background:linear-gradient(135deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer;user-select:none}
+.header .right{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.stars-badge,.streak-badge{display:flex;align-items:center;gap:5px;padding:7px 14px;border-radius:50px;font-weight:700;font-size:0.9rem;cursor:default}
+.stars-badge{background:#FFF9E6;border:2px solid var(--yellow)}
+.streak-badge{background:#FFF0F0;border:2px solid var(--pink)}
+.star-icon{animation:sparkle 1.5s infinite}
+@keyframes sparkle{0%,100%{transform:scale(1)}50%{transform:scale(1.3)}}
+.container{max-width:920px;margin:0 auto;padding:20px 14px 80px}
+.day-header{background:linear-gradient(135deg,#FFF5F5,#F0FDFA);border-radius:var(--radius);padding:24px 20px;text-align:center;margin-bottom:20px;box-shadow:var(--shadow)}
+.day-header .day-number{font-size:1rem;color:var(--text-light);margin-bottom:4px}
+.day-header .day-title{font-size:1.5rem;font-weight:800;margin-bottom:8px}
+.day-header .day-theme{font-size:1rem;color:var(--pink);font-weight:600}
+.calendar-strip{display:flex;gap:8px;justify-content:center;margin-bottom:20px;flex-wrap:wrap}
+.cal-day{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;background:white;border:2px solid #EEE;transition:all 0.2s}
+.cal-day.today{border-color:var(--pink);background:#FFF5F5;box-shadow:0 0 0 3px rgba(255,107,107,0.15)}
+.cal-day.done{background:var(--green);border-color:var(--green);color:white}
+.cal-day.missed{border-color:#DDD;color:#CCC}
+.task-list{display:flex;flex-direction:column;gap:14px;margin-bottom:20px}
+.task-card{background:white;border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow);display:flex;align-items:center;gap:16px;cursor:pointer;transition:all 0.25s;border:3px solid transparent;user-select:none;position:relative;overflow:hidden}
+.task-card:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(0,0,0,0.1)}
+.task-card:active{transform:scale(0.98)}
+.task-card.done{border-color:var(--green);background:#F0FFF4}
+.task-card.done::after{content:"✅";position:absolute;right:20px;top:50%;transform:translateY(-50%);font-size:1.5rem}
+.task-emoji{font-size:2.5rem;flex-shrink:0}
+.task-info{flex:1;min-width:0}
+.task-label{font-weight:700;font-size:1.05rem}
+.task-detail{font-size:0.85rem;color:var(--text-light);margin-top:2px;line-height:1.4}
+.task-card.phonics{border-left:5px solid var(--pink)}
+.task-card.vocab{border-left:5px solid var(--teal)}
+.task-card.quiz-task{border-left:5px solid var(--purple)}
+.progress-section{margin-bottom:24px}
+.progress-section h3{font-size:0.95rem;margin-bottom:10px;color:var(--text-light)}
+.progress-wrap{margin:10px 0}
+.progress-label{display:flex;justify-content:space-between;font-size:0.82rem;font-weight:600;margin-bottom:4px}
+.progress-bar{height:10px;background:#EEE;border-radius:10px;overflow:hidden}
+.progress-fill{height:100%;border-radius:10px;transition:width 0.5s ease}
+.progress-fill.phonics-fill{background:linear-gradient(90deg,var(--pink),var(--orange))}
+.progress-fill.vocab-fill{background:linear-gradient(90deg,var(--teal),var(--green))}
+.day-complete{background:linear-gradient(135deg,#FFF9E6,#FFF0F0);border:3px solid var(--yellow);border-radius:var(--radius);padding:20px;text-align:center;margin-top:16px;animation:fadeIn 0.5s ease}
+.day-complete .big-emoji{font-size:3rem}
+.day-complete .complete-msg{font-size:1.2rem;font-weight:700;margin:8px 0}
+.back-btn{display:inline-flex;align-items:center;gap:6px;background:white;border:2px solid #E0E0E0;border-radius:50px;padding:10px 20px;cursor:pointer;font-size:0.95rem;font-weight:600;color:var(--text);transition:all 0.2s;margin-bottom:16px;user-select:none}
+.back-btn:hover{background:#f5f5f5}
+.section-title{font-size:1.5rem;font-weight:800;text-align:center;margin:16px 0 8px}
+.section-subtitle{text-align:center;color:var(--text-light);font-size:0.9rem;margin-bottom:20px}
+.phonics-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(56px,1fr));gap:10px}
+.letter-btn{aspect-ratio:1;background:white;border:2px solid #EEE;border-radius:var(--radius-sm);cursor:pointer;font-size:1.4rem;font-weight:800;color:var(--text);transition:all 0.2s;display:flex;align-items:center;justify-content:center;position:relative;user-select:none}
+.letter-btn:hover{border-color:var(--pink);transform:scale(1.08);box-shadow:0 4px 16px rgba(255,107,107,0.2)}
+.letter-btn:active{transform:scale(0.95)}
+.letter-btn.today-letter{border-color:var(--pink);background:#FFF5F5;box-shadow:0 0 0 4px rgba(255,107,107,0.12)}
+.letter-btn.learned-letter{border-color:var(--green);background:#F0FFF4}
+.letter-btn.learned-letter::after{content:"✓";position:absolute;top:2px;right:6px;font-size:0.7rem;color:var(--green)}
+.phonics-detail{background:white;border-radius:var(--radius);padding:28px 24px;margin-top:20px;text-align:center;box-shadow:var(--shadow);border:3px solid var(--pink);display:none}
+.phonics-detail.show{display:block;animation:fadeIn 0.3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.phonics-detail .big-emoji{font-size:4rem;display:block}
+.phonics-detail .big-letter{font-size:3rem;font-weight:900;color:var(--pink)}
+.phonics-detail .word-text{font-size:1.6rem;font-weight:700;margin:8px 0}
+.phonics-detail .word-cn{font-size:1rem;color:var(--text-light)}
+.phonics-detail .sound-btn{margin-top:16px;padding:12px 28px;background:var(--pink);color:white;border:none;border-radius:50px;font-size:1.1rem;font-weight:700;cursor:pointer;transition:all 0.2s}
+.phonics-detail .sound-btn:hover{filter:brightness(1.1);transform:scale(1.05)}
+.vocab-categories{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:20px}
+.cat-btn{padding:10px 18px;border-radius:50px;border:2px solid #EEE;background:white;cursor:pointer;font-size:0.9rem;font-weight:600;transition:all 0.2s;user-select:none}
+.cat-btn:hover{border-color:var(--teal)}
+.cat-btn.active{background:var(--teal);color:white;border-color:var(--teal)}
+.vocab-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:12px}
+.vocab-card{background:white;border-radius:var(--radius-sm);padding:16px 10px;text-align:center;cursor:pointer;box-shadow:0 2px 12px rgba(0,0,0,0.06);transition:all 0.2s;border:2px solid transparent;position:relative;user-select:none}
+.vocab-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.1);border-color:var(--teal)}
+.vocab-card:active{transform:scale(0.95)}
+.vocab-card.today-word{border-color:var(--teal);background:#F0FDFA;box-shadow:0 0 0 3px rgba(78,205,196,0.12)}
+.vocab-card.learned{border-color:var(--green);background:#F0FFF4}
+.vocab-card .v-emoji{font-size:2.5rem;display:block;margin-bottom:8px}
+.vocab-card .v-word{font-weight:700;font-size:1rem}
+.vocab-card .v-cn{font-size:0.78rem;color:var(--text-light);margin-top:2px}
+.quiz-emoji{font-size:5rem;display:block;margin:10px 0 20px;animation:bounce 0.6s ease}
+@keyframes bounce{0%{transform:translateY(-30px);opacity:0}60%{transform:translateY(6px)}100%{transform:translateY(0);opacity:1}}
+.quiz-question{font-size:1.1rem;color:var(--text-light);margin-bottom:4px}
+.quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:440px;margin:0 auto}
+.quiz-option{padding:16px;background:white;border:3px solid #EEE;border-radius:var(--radius-sm);font-size:1.15rem;font-weight:700;cursor:pointer;transition:all 0.2s;user-select:none}
+.quiz-option:hover{border-color:var(--purple);transform:scale(1.03)}
+.quiz-option.correct{border-color:var(--green);background:#ECFDF5;animation:pop 0.4s}
+.quiz-option.wrong{border-color:var(--pink);background:#FFF5F5;animation:shake 0.4s}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+.quiz-score{display:flex;align-items:center;justify-content:center;gap:20px;margin:16px 0;font-size:1rem;font-weight:700;flex-wrap:wrap}
+.quiz-next{padding:12px 32px;background:var(--purple);color:white;border:none;border-radius:50px;font-size:1.1rem;font-weight:700;cursor:pointer;margin-top:16px;transition:all 0.2s}
+.quiz-next:hover{filter:brightness(1.1);transform:scale(1.05)}
+.celebration{position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:999}
+.confetti{position:absolute;width:12px;height:12px;border-radius:3px;animation:confetti-fall 2s ease-out forwards}
+@keyframes confetti-fall{0%{transform:translateY(-60px) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+.toast{position:fixed;top:24px;left:50%;transform:translateX(-50%);background:#333;color:white;padding:12px 24px;border-radius:50px;font-weight:700;z-index:1000;animation:toastIn 0.4s ease,toastOut 0.4s 1.6s ease forwards;font-size:1rem}
+@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(-20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+@keyframes toastOut{from{opacity:1}to{opacity:0}}
+.hidden{display:none!important}
+.footer{text-align:center;padding:20px;color:#ccc;font-size:0.8rem}
+.tip-banner{background:linear-gradient(135deg,#FFF5F5,#FFF9E6);border:2px dashed var(--orange);border-radius:var(--radius-sm);padding:14px 18px;margin-bottom:16px;font-size:0.85rem;color:#B45309;text-align:center;line-height:1.5}
+.reset-link{font-size:0.78rem;color:var(--text-light);text-align:center;cursor:pointer;margin-top:16px;text-decoration:underline}
+.reset-link:hover{color:var(--pink)}
+
+/* ===== Mobile Responsive ===== */
+@media (max-width: 640px) {
+  .header { padding: 10px 14px; gap: 8px; }
+  .header .logo { font-size: 1.1rem; }
+  .header .right { gap: 8px; }
+  .stars-badge, .streak-badge { padding: 5px 10px; font-size: 0.78rem; }
+
+  .container { padding: 12px 10px 70px; }
+
+  .day-header { padding: 18px 14px; border-radius: 18px; }
+  .day-header .day-title { font-size: 1.25rem; }
+  .day-header .day-number { font-size: 0.88rem; }
+  .day-header .day-theme { font-size: 0.9rem; }
+
+  .calendar-strip { gap: 5px; }
+  .cal-day { width: 34px; height: 34px; font-size: 0.75rem; }
+
+  .task-card { padding: 14px; gap: 10px; border-radius: 18px; }
+  .task-emoji { font-size: 2rem; }
+  .task-label { font-size: 0.95rem; }
+  .task-detail { font-size: 0.78rem; }
+  .task-card.done::after { right: 12px; font-size: 1.2rem; }
+
+  .phonics-grid { grid-template-columns: repeat(auto-fill, minmax(48px, 1fr)); gap: 8px; }
+  .letter-btn { font-size: 1.2rem; border-radius: 12px; }
+
+  .phonics-detail { padding: 20px 16px; border-radius: 18px; }
+  .phonics-detail .big-emoji { font-size: 3rem; }
+  .phonics-detail .big-letter { font-size: 2.2rem; }
+  .phonics-detail .word-text { font-size: 1.3rem; }
+  .phonics-detail .sound-btn { padding: 10px 24px; font-size: 1rem; }
+
+  .vocab-grid { grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 8px; }
+  .vocab-card { padding: 12px 6px; border-radius: 12px; }
+  .vocab-card .v-emoji { font-size: 2rem; }
+  .vocab-card .v-word { font-size: 0.9rem; }
+  .vocab-card .v-cn { font-size: 0.72rem; }
+
+  .cat-btn { padding: 8px 14px; font-size: 0.8rem; }
+
+  .quiz-emoji { font-size: 3.5rem; }
+  .quiz-options { grid-template-columns: 1fr 1fr; gap: 8px; max-width: 100%; }
+  .quiz-option { padding: 14px 12px; font-size: 1rem; border-radius: 12px; }
+  .quiz-score { gap: 12px; font-size: 0.9rem; }
+
+  .section-title { font-size: 1.3rem; }
+  .section-subtitle { font-size: 0.82rem; }
+  .back-btn { padding: 8px 16px; font-size: 0.85rem; }
+
+  .tip-banner { font-size: 0.78rem; padding: 10px 14px; }
+  .day-complete { padding: 16px; }
+  .day-complete .big-emoji { font-size: 2.5rem; }
+  .day-complete .complete-msg { font-size: 1rem; }
+
+  .footer { font-size: 0.7rem; padding: 16px; }
+}
+
+@media (max-width: 380px) {
+  .phonics-grid { grid-template-columns: repeat(auto-fill, minmax(42px, 1fr)); gap: 6px; }
+  .letter-btn { font-size: 1.1rem; }
+  .vocab-grid { grid-template-columns: repeat(auto-fill, minmax(78px, 1fr)); gap: 6px; }
+  .vocab-card .v-emoji { font-size: 1.8rem; }
+  .vocab-card .v-word { font-size: 0.82rem; }
+  .calendar-strip { gap: 3px; }
+  .cal-day { width: 30px; height: 30px; font-size: 0.7rem; }
+}</style>
+</head>
+<body>
+<header class="header">
+<div class="logo" onclick="showSection('home')">🌟 英语启蒙小课堂</div>
+<div class="right">
+<div class="streak-badge">🔥 连续 <span id="streakCount">1</span> 天</div>
+<div class="stars-badge"><span class="star-icon">⭐</span> <span id="starCount">0</span></div>
+</div>
+</header>
+<div class="container">
+<div id="section-home">
+<div class="day-header">
+<div class="day-number" id="dayNumber"></div>
+<div class="day-title" id="dayTitle">🌞 今日任务</div>
+<div class="day-theme" id="dayTheme"></div>
+</div>
+<div class="calendar-strip" id="calendarStrip"></div>
+<div class="progress-section">
+<h3>📊 暑假学习进度</h3>
+<div class="progress-wrap">
+<div class="progress-label"><span>🔤 字母 (26个)</span><span id="phonicsProgressLabel">0/26</span></div>
+<div class="progress-bar"><div class="progress-fill phonics-fill" id="phonicsProgressBar" style="width:0%"></div></div>
+</div>
+<div class="progress-wrap">
+<div class="progress-label"><span>📝 单词 (68个)</span><span id="vocabProgressLabel">0/68</span></div>
+<div class="progress-bar"><div class="progress-fill vocab-fill" id="vocabProgressBar" style="width:0%"></div></div>
+</div>
+</div>
+<div class="tip-banner">💡 <strong>每天内容都不同！</strong>系统自动安排新字母和单词，暑假结束前轻松学完26个字母+68个核心单词！</div>
+<div class="task-list" id="taskList"></div>
+<div id="dayCompleteBanner" class="day-complete hidden">
+<div class="big-emoji">🏆</div><div class="complete-msg">今天的任务全部完成！太厉害了！</div>
+<div style="color:var(--text-light);margin:4px 0">额外奖励 3 颗星星 ⭐</div>
+<div style="font-size:0.85rem;color:var(--text-light)">明天再来，又有新内容等着你哦～</div>
+</div>
+<div class="reset-link" onclick="resetProgress()">🔄 重新开始学习计划</div>
+</div>
+<div id="section-phonics" class="hidden">
+<button class="back-btn" onclick="goBackFromPhonics()">← 返回今日任务</button>
+<div class="section-title">🔤 自然拼读</div>
+<div class="section-subtitle"><span style="background:#FFF5F5;padding:4px 10px;border-radius:10px;color:var(--pink);font-weight:700">粉色</span>=今天要学的字母，<span style="background:#F0FFF4;padding:4px 10px;border-radius:10px;color:var(--green);font-weight:700">绿色</span>=已学过</div>
+<div class="phonics-grid" id="phonicsGrid"></div>
+<div class="phonics-detail" id="phonicsDetail">
+<span class="big-emoji" id="pEmoji"></span>
+<div class="big-letter" id="pLetter"></div>
+<div class="word-text" id="pWord"></div>
+<div class="word-cn" id="pCn"></div>
+<button class="sound-btn" onclick="speakPhonics()">🔊 听单词发音</button>
+</div>
+</div>
+<div id="section-vocab" class="hidden">
+<button class="back-btn" onclick="goBackFromVocab()">← 返回今日任务</button>
+<div class="section-title">📝 单词闪卡</div>
+<div class="section-subtitle"><span style="background:#F0FDFA;padding:4px 10px;border-radius:10px;color:var(--teal);font-weight:700">青色</span>=今天要学的单词，点卡片听发音！</div>
+<div class="vocab-categories" id="vocabCats"></div>
+<div class="vocab-grid" id="vocabGrid"></div>
+</div>
+<div id="section-quiz" class="hidden">
+<button class="back-btn" onclick="goBackFromQuiz()">← 返回今日任务</button>
+<div class="section-title">🎮 今日测验</div>
+<div class="section-subtitle">考考你：今天学的单词都记住了吗？</div>
+<div class="quiz-score"><span>✅ <strong id="quizCorrect">0</strong></span><span>❌ <strong id="quizWrong">0</strong></span><span>⭐ <strong id="quizStars">0</strong></span></div>
+<div class="progress-wrap"><div class="progress-label"><span>答题进度</span><span id="quizProgress">0/8</span></div><div class="progress-bar"><div class="progress-fill" id="quizProgressBar" style="width:0%;background:var(--purple)"></div></div></div>
+<div class="quiz-question" id="quizQuestion">这是什么？</div>
+<div class="quiz-emoji" id="quizEmoji">🐶</div>
+<div class="quiz-options" id="quizOptions"></div>
+<button class="quiz-next hidden" id="quizNextBtn" onclick="nextQuizRound()">下一题 →</button>
+</div>
+</div>
+<div class="celebration" id="celebration"></div>
+<div class="footer">🌟 英语启蒙小课堂 · 每天进步一点点！</div>
+<script>
+const phonicsAll=[{letter:'A',lower:'a',sound:'/æ/',word:'Apple',cn:'苹果',emoji:'🍎'},{letter:'B',lower:'b',sound:'/b/',word:'Ball',cn:'球',emoji:'⚽'},{letter:'C',lower:'c',sound:'/k/',word:'Cat',cn:'猫',emoji:'🐱'},{letter:'D',lower:'d',sound:'/d/',word:'Dog',cn:'狗',emoji:'🐶'},{letter:'E',lower:'e',sound:'/e/',word:'Egg',cn:'鸡蛋',emoji:'🥚'},{letter:'F',lower:'f',sound:'/f/',word:'Fish',cn:'鱼',emoji:'🐟'},{letter:'G',lower:'g',sound:'/g/',word:'Goat',cn:'山羊',emoji:'🐐'},{letter:'H',lower:'h',sound:'/h/',word:'Hat',cn:'帽子',emoji:'🎩'},{letter:'I',lower:'i',sound:'/ɪ/',word:'Igloo',cn:'冰屋',emoji:'🏠'},{letter:'J',lower:'j',sound:'/dʒ/',word:'Juice',cn:'果汁',emoji:'🧃'},{letter:'K',lower:'k',sound:'/k/',word:'Kite',cn:'风筝',emoji:'🪁'},{letter:'L',lower:'l',sound:'/l/',word:'Lion',cn:'狮子',emoji:'🦁'},{letter:'M',lower:'m',sound:'/m/',word:'Moon',cn:'月亮',emoji:'🌙'},{letter:'N',lower:'n',sound:'/n/',word:'Nose',cn:'鼻子',emoji:'👃'},{letter:'O',lower:'o',sound:'/ɒ/',word:'Orange',cn:'橙子',emoji:'🍊'},{letter:'P',lower:'p',sound:'/p/',word:'Pig',cn:'猪',emoji:'🐷'},{letter:'Q',lower:'q',sound:'/kw/',word:'Queen',cn:'女王',emoji:'👸'},{letter:'R',lower:'r',sound:'/r/',word:'Rabbit',cn:'兔子',emoji:'🐰'},{letter:'S',lower:'s',sound:'/s/',word:'Sun',cn:'太阳',emoji:'☀️'},{letter:'T',lower:'t',sound:'/t/',word:'Tiger',cn:'老虎',emoji:'🐯'},{letter:'U',lower:'u',sound:'/ʌ/',word:'Umbrella',cn:'雨伞',emoji:'☂️'},{letter:'V',lower:'v',sound:'/v/',word:'Van',cn:'面包车',emoji:'🚐'},{letter:'W',lower:'w',sound:'/w/',word:'Water',cn:'水',emoji:'💧'},{letter:'X',lower:'x',sound:'/ks/',word:'Fox',cn:'狐狸',emoji:'🦊'},{letter:'Y',lower:'y',sound:'/j/',word:'Yellow',cn:'黄色',emoji:'💛'},{letter:'Z',lower:'z',sound:'/z/',word:'Zebra',cn:'斑马',emoji:'🦓'}];
+const vocabCategories={animals:{name:'🐱 动物',words:[{en:'Dog',cn:'狗',emoji:'🐶'},{en:'Cat',cn:'猫',emoji:'🐱'},{en:'Fish',cn:'鱼',emoji:'🐟'},{en:'Bird',cn:'鸟',emoji:'🐦'},{en:'Rabbit',cn:'兔子',emoji:'🐰'},{en:'Duck',cn:'鸭子',emoji:'🦆'},{en:'Pig',cn:'猪',emoji:'🐷'},{en:'Cow',cn:'奶牛',emoji:'🐮'},{en:'Horse',cn:'马',emoji:'🐴'},{en:'Sheep',cn:'绵羊',emoji:'🐑'},{en:'Monkey',cn:'猴子',emoji:'🐵'},{en:'Elephant',cn:'大象',emoji:'🐘'}]},colors:{name:'🎨 颜色',words:[{en:'Red',cn:'红色',emoji:'🔴'},{en:'Blue',cn:'蓝色',emoji:'🔵'},{en:'Green',cn:'绿色',emoji:'🟢'},{en:'Yellow',cn:'黄色',emoji:'🟡'},{en:'Orange',cn:'橙色',emoji:'🟠'},{en:'Purple',cn:'紫色',emoji:'🟣'},{en:'Pink',cn:'粉色',emoji:'💗'},{en:'White',cn:'白色',emoji:'⚪'},{en:'Black',cn:'黑色',emoji:'⚫'},{en:'Brown',cn:'棕色',emoji:'🟤'},{en:'Gray',cn:'灰色',emoji:'🩶'}]},numbers:{name:'🔢 数字',words:[{en:'One',cn:'一',emoji:'1️⃣'},{en:'Two',cn:'二',emoji:'2️⃣'},{en:'Three',cn:'三',emoji:'3️⃣'},{en:'Four',cn:'四',emoji:'4️⃣'},{en:'Five',cn:'五',emoji:'5️⃣'},{en:'Six',cn:'六',emoji:'6️⃣'},{en:'Seven',cn:'七',emoji:'7️⃣'},{en:'Eight',cn:'八',emoji:'8️⃣'},{en:'Nine',cn:'九',emoji:'9️⃣'},{en:'Ten',cn:'十',emoji:'🔟'}]},school:{name:'🏫 学校',words:[{en:'Book',cn:'书',emoji:'📖'},{en:'Pen',cn:'笔',emoji:'🖊️'},{en:'Pencil',cn:'铅笔',emoji:'✏️'},{en:'Bag',cn:'书包',emoji:'🎒'},{en:'Desk',cn:'课桌',emoji:'🪑'},{en:'Ruler',cn:'尺子',emoji:'📏'},{en:'Eraser',cn:'橡皮',emoji:'🧹'},{en:'Teacher',cn:'老师',emoji:'👩‍🏫'},{en:'Student',cn:'学生',emoji:'🧑‍🎓'}]},food:{name:'🍎 食物',words:[{en:'Apple',cn:'苹果',emoji:'🍎'},{en:'Banana',cn:'香蕉',emoji:'🍌'},{en:'Milk',cn:'牛奶',emoji:'🥛'},{en:'Bread',cn:'面包',emoji:'🍞'},{en:'Egg',cn:'鸡蛋',emoji:'🥚'},{en:'Rice',cn:'米饭',emoji:'🍚'},{en:'Water',cn:'水',emoji:'💧'},{en:'Cake',cn:'蛋糕',emoji:'🎂'},{en:'Juice',cn:'果汁',emoji:'🧃'},{en:'Candy',cn:'糖果',emoji:'🍬'}]},body:{name:'🦵 身体',words:[{en:'Head',cn:'头',emoji:'🗣️'},{en:'Eye',cn:'眼睛',emoji:'👁️'},{en:'Ear',cn:'耳朵',emoji:'👂'},{en:'Nose',cn:'鼻子',emoji:'👃'},{en:'Mouth',cn:'嘴巴',emoji:'👄'},{en:'Hand',cn:'手',emoji:'✋'},{en:'Foot',cn:'脚',emoji:'🦶'},{en:'Arm',cn:'手臂',emoji:'💪'}]},family:{name:'👨‍👩‍👧 家庭',words:[{en:'Mom',cn:'妈妈',emoji:'👩'},{en:'Dad',cn:'爸爸',emoji:'👨'},{en:'Sister',cn:'姐妹',emoji:'👧'},{en:'Brother',cn:'兄弟',emoji:'👦'},{en:'Baby',cn:'宝宝',emoji:'👶'},{en:'Grandma',cn:'奶奶',emoji:'👵'},{en:'Grandpa',cn:'爷爷',emoji:'👴'},{en:'Family',cn:'家庭',emoji:'👨‍👩‍👧‍👦'}]}};
+const catKeys=Object.keys(vocabCategories);
+const allVocabFlat=[];catKeys.forEach(k=>vocabCategories[k].words.forEach(w=>allVocabFlat.push({...w,cat:k})));
+const TODAY=new Date().toISOString().split('T')[0];
+function getStorage(){let d={};try{d=JSON.parse(localStorage.getItem('engV2')||'{}');}catch(e){}if(!d.startDate){d.startDate=TODAY;d.phonicsLearned=[];d.vocabLearned=[];d.completedDays={};d.stars=0;d.lastActive=TODAY;saveStorage(d);}return d;}
+function saveStorage(d){localStorage.setItem('engV2',JSON.stringify(d));}
+let S=getStorage();
+function calcStreak(){const last=S.lastActive||TODAY;const lastD=new Date(last);const todayD=new Date(TODAY);const diff=Math.floor((todayD-lastD)/(86400000));if(diff===0)return S.streak||1;if(diff===1)return(S.streak||1)+1;return 1;}
+function getDayNumber(){const start=new Date(S.startDate);const today=new Date(TODAY);return Math.max(1,Math.floor((today-start)/86400000)+1);}
+function getDailyPlan(){const dayNum=getDayNumber();const p1=((dayNum-1)*2)%26;const p2=((dayNum-1)*2+1)%26;const todayLetters=[p1,p2];const catIdx=(dayNum-1)%catKeys.length;const catKey=catKeys[catIdx];const catWords=vocabCategories[catKey].words;const unlearned=catWords.filter(w=>!S.vocabLearned.includes(w.en));const pool=unlearned.length>=5?unlearned:[...unlearned,...catWords.filter(w=>S.vocabLearned.includes(w.en))];const seed=dayNum*7+catIdx*13;const shuffled=[...pool].sort((a,b)=>{const ha=(a.en.charCodeAt(0)+seed)%100;const hb=(b.en.charCodeAt(0)+seed)%100;return ha-hb;});const todayWords=shuffled.slice(0,Math.min(5,shuffled.length));return{dayNum,todayLetters,todayWords,catKey,catName:vocabCategories[catKey].name};}
+function isDayComplete(){return S.completedDays&&S.completedDays[TODAY]&&S.completedDays[TODAY].phonics&&S.completedDays[TODAY].vocab&&S.completedDays[TODAY].quiz;}
+function markTask(task){if(!S.completedDays)S.completedDays={};if(!S.completedDays[TODAY])S.completedDays[TODAY]={};S.completedDays[TODAY][task]=true;S.lastActive=TODAY;S.streak=calcStreak();saveStorage(S);renderHome();if(isDayComplete()){document.getElementById('dayCompleteBanner').classList.remove('hidden');if(!S._dayBonusGiven||S._dayBonusGiven!==TODAY){S._dayBonusGiven=TODAY;addStars(3);saveStorage(S);setTimeout(celebrate,400);}}}
+function renderHome(){const plan=getDailyPlan();const complete=S.completedDays&&S.completedDays[TODAY]||{};const streak=calcStreak();S.streak=streak;S.lastActive=TODAY;saveStorage(S);document.getElementById('dayNumber').textContent='今天是学英语的第 '+plan.dayNum+' 天';document.getElementById('dayTitle').textContent=plan.dayNum===1?'🌞 欢迎开始！今日任务':'🌞 今日任务';document.getElementById('dayTheme').textContent='📌 今日主题：'+plan.catName;document.getElementById('streakCount').textContent=streak;document.getElementById('starCount').textContent=S.stars;const cal=document.getElementById('calendarStrip');let calHTML='';for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const ds=d.toISOString().split('T')[0];const isToday=ds===TODAY;const isDone=S.completedDays&&S.completedDays[ds]&&S.completedDays[ds].phonics&&S.completedDays[ds].vocab&&S.completedDays[ds].quiz;const isMissed=!isToday&&!isDone&&ds<TODAY;let cls='cal-day';if(isToday)cls+=' today';else if(isDone)cls+=' done';else if(isMissed)cls+=' missed';calHTML+='<div class="'+cls+'">'+(isDone?'✓':d.getDate())+'</div>';}cal.innerHTML=calHTML;const pLearned=S.phonicsLearned.length;document.getElementById('phonicsProgressLabel').textContent=pLearned+'/26';document.getElementById('phonicsProgressBar').style.width=(pLearned/26*100)+'%';const vLearned=S.vocabLearned.length;document.getElementById('vocabProgressLabel').textContent=vLearned+'/68';document.getElementById('vocabProgressBar').style.width=(vLearned/68*100)+'%';const taskList=document.getElementById('taskList');const letterNames=plan.todayLetters.map(i=>phonicsAll[i].letter).join('、');const wordNames=plan.todayWords.map(w=>w.en+' '+w.emoji).join(' ');taskList.innerHTML='<div class="task-card phonics '+(complete.phonics?'done':'')+'" onclick="goToPhonics()"><span class="task-emoji">🔤</span><div class="task-info"><div class="task-label">任务一：学习字母</div><div class="task-detail">今天学：<strong>'+letterNames+'</strong></div></div></div><div class="task-card vocab '+(complete.vocab?'done':'')+'" onclick="goToVocab()"><span class="task-emoji">📝</span><div class="task-info"><div class="task-label">任务二：学习单词（'+plan.catName+'）</div><div class="task-detail">今天学：'+wordNames+'</div></div></div><div class="task-card quiz-task '+(complete.quiz?'done':'')+'" onclick="goToQuiz()"><span class="task-emoji">🎮</span><div class="task-info"><div class="task-label">任务三：今日测验</div><div class="task-detail">考考今天学的字母和单词</div></div></div>';if(isDayComplete()){document.getElementById('dayCompleteBanner').classList.remove('hidden');}else{document.getElementById('dayCompleteBanner').classList.add('hidden');}}
+let currentPhonicsIdx=-1;
+function renderPhonicsPage(){const plan=getDailyPlan();const grid=document.getElementById('phonicsGrid');grid.innerHTML=phonicsAll.map((p,i)=>{let cls='letter-btn';if(plan.todayLetters.includes(i))cls+=' today-letter';if(S.phonicsLearned.includes(i))cls+=' learned-letter';return '<button class="'+cls+'" onclick="selectPhonics('+i+')">'+p.letter+'</button>';}).join('');if(currentPhonicsIdx>=0){const p=phonicsAll[currentPhonicsIdx];document.getElementById('pEmoji').textContent=p.emoji;document.getElementById('pLetter').textContent=p.letter+' '+p.lower;document.getElementById('pWord').textContent=p.word;document.getElementById('pCn').textContent=p.cn+' (发音: '+p.sound+')';document.getElementById('phonicsDetail').classList.add('show');}}
+function selectPhonics(idx){currentPhonicsIdx=idx;const p=phonicsAll[idx];if(!S.phonicsLearned.includes(idx)){S.phonicsLearned.push(idx);saveStorage(S);addStars(1);}renderPhonicsPage();speak(p.letter,0.7);checkPhonicsDone();}
+function speakPhonics(){if(currentPhonicsIdx<0)return;const p=phonicsAll[currentPhonicsIdx];speak(p.word,0.75);}
+function checkPhonicsDone(){const plan=getDailyPlan();const allDone=plan.todayLetters.every(i=>S.phonicsLearned.includes(i));if(allDone&&(!S.completedDays[TODAY]||!S.completedDays[TODAY].phonics)){markTask('phonics');showToast('✅ 字母学习完成！');}}
+function goToPhonics(){showSection('phonics');currentPhonicsIdx=-1;document.getElementById('phonicsDetail').classList.remove('show');renderPhonicsPage();}
+function goBackFromPhonics(){showSection('home');}
+let currentVocabCat='animals';
+function renderVocabPage(){const plan=getDailyPlan();if(!currentVocabCat)currentVocabCat=plan.catKey;const cats=document.getElementById('vocabCats');cats.innerHTML=catKeys.map(k=>{let cls='cat-btn';if(k===currentVocabCat)cls+=' active';return '<button class="'+cls+'" onclick="selectVocabCat(\x27'+k+'\x27)">'+vocabCategories[k].name+'</button>';}).join('');const cat=vocabCategories[currentVocabCat];const grid=document.getElementById('vocabGrid');grid.innerHTML=cat.words.map(w=>{let cls='vocab-card';if(plan.todayWords.some(tw=>tw.en===w.en))cls+=' today-word';if(S.vocabLearned.includes(w.en))cls+=' learned';return '<div class="'+cls+'" onclick="learnVocabWord(\x27'+w.en+'\x27,this)" style="position:relative"><span class="v-emoji">'+w.emoji+'</span><div class="v-word">'+w.en+'</div><div class="v-cn">'+w.cn+'</div></div>';}).join('');}
+function selectVocabCat(key){currentVocabCat=key;renderVocabPage();}
+function learnVocabWord(word,el){if(!S.vocabLearned.includes(word)){S.vocabLearned.push(word);saveStorage(S);addStars(1);}speak(word,0.8);renderVocabPage();checkVocabDone();}
+function checkVocabDone(){const plan=getDailyPlan();const allDone=plan.todayWords.every(w=>S.vocabLearned.includes(w.en));if(allDone&&(!S.completedDays[TODAY]||!S.completedDays[TODAY].vocab)){markTask('vocab');showToast('✅ 单词学习完成！');}}
+function goToVocab(){const plan=getDailyPlan();currentVocabCat=plan.catKey;showSection('vocab');renderVocabPage();}
+function goBackFromVocab(){showSection('home');}
+let quizState={correct:0,wrong:0,current:null,answered:false,count:0,max:8,pool:[]};
+function buildQuizPool(){const plan=getDailyPlan();const todayEns=new Set(plan.todayWords.map(w=>w.en));const learned=allVocabFlat.filter(w=>S.vocabLearned.includes(w.en)||todayEns.has(w.en));if(learned.length<8){const rest=allVocabFlat.filter(w=>!learned.includes(w));return[...learned,...rest.sort(()=>Math.random()-0.5).slice(0,8-learned.length)];}return learned.sort(()=>Math.random()-0.5).slice(0,16);}
+function goToQuiz(){quizState={correct:0,wrong:0,current:null,answered:false,count:0,max:8,pool:buildQuizPool()};document.getElementById('quizCorrect').textContent='0';document.getElementById('quizWrong').textContent='0';document.getElementById('quizStars').textContent='0';document.getElementById('quizProgress').textContent='0/8';document.getElementById('quizProgressBar').style.width='0%';document.getElementById('quizNextBtn').classList.add('hidden');showSection('quiz');nextQuizRound();}
+function nextQuizRound(){if(quizState.count>=quizState.max){const earned=Math.max(0,quizState.correct-quizState.wrong);document.getElementById('quizEmoji').textContent='🎉';document.getElementById('quizQuestion').textContent='测验完成！';document.getElementById('quizOptions').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:20px"><div style="font-size:2.5rem;margin-bottom:8px">'+(quizState.correct>=7?'🏆':quizState.correct>=5?'😊':'💪')+'</div><div style="font-size:1.2rem;font-weight:700">答对 '+quizState.correct+'/'+quizState.max+' 题</div><div style="color:var(--text-light);margin:8px 0">获得 '+earned+' 颗星星 ⭐</div><button class="quiz-next" onclick="goToQuiz()">再来一轮 🔄</button><button class="back-btn" onclick="showSection(\x27home\x27)" style="margin-top:8px">← 返回今日任务</button></div>';document.getElementById('quizNextBtn').classList.add('hidden');if(!S.completedDays[TODAY]||!S.completedDays[TODAY].quiz){markTask('quiz');if(earned>0)addStars(earned);}return;}quizState.answered=false;quizState.count++;document.getElementById('quizProgress').textContent=quizState.count+'/'+quizState.max;document.getElementById('quizProgressBar').style.width=(quizState.count/quizState.max*100)+'%';document.getElementById('quizNextBtn').classList.add('hidden');const correct=quizState.pool[quizState.count-1];if(!correct){const r=allVocabFlat[Math.floor(Math.random()*allVocabFlat.length)];quizState.pool[quizState.count-1]=r;quizState.current=r;}else{quizState.current=correct;}const others=allVocabFlat.filter(w=>w.en!==quizState.current.en).sort(()=>Math.random()-0.5).slice(0,3);const options=[quizState.current,...others].sort(()=>Math.random()-0.5);document.getElementById('quizEmoji').textContent=quizState.current.emoji;document.getElementById('quizQuestion').textContent='这是什么？（第 '+quizState.count+' 题）';document.getElementById('quizOptions').innerHTML=options.map(o=>'<button class="quiz-option" onclick="answerQuiz(\x27'+o.en+'\x27,this)">'+o.en+'</button>').join('');}
+function answerQuiz(correctEn,btnEl){if(quizState.answered)return;quizState.answered=true;const correct=quizState.current.en===correctEn;if(correct){quizState.correct++;btnEl.classList.add('correct');document.getElementById('quizCorrect').textContent=quizState.correct;speak('Great! '+quizState.current.en,0.85);showToast('✅ 答对了！太棒了！');addStars(1);}else{quizState.wrong++;btnEl.classList.add('wrong');document.getElementById('quizWrong').textContent=quizState.wrong;document.querySelectorAll('#quizOptions .quiz-option').forEach(b=>{if(b.textContent===quizState.current.en)b.classList.add('correct');});speak(quizState.current.en,0.85);showToast('❌ 正确答案是：'+quizState.current.en);}document.getElementById('quizStars').textContent=Math.max(0,quizState.correct-quizState.wrong);document.getElementById('quizNextBtn').classList.remove('hidden');document.querySelectorAll('#quizOptions .quiz-option').forEach(b=>b.style.pointerEvents='none');}
+function goBackFromQuiz(){showSection('home');}
+function speak(text,rate=0.85){return new Promise(resolve=>{if(!window.speechSynthesis){resolve();return;}window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='en-US';u.rate=rate;u.pitch=1.1;u.onend=resolve;u.onerror=resolve;window.speechSynthesis.speak(u);});}
+function addStars(n){S.stars=(S.stars||0)+n;saveStorage(S);document.getElementById('starCount').textContent=S.stars;if(n>=3)setTimeout(celebrate,200);}
+function celebrate(){const el=document.getElementById('celebration');const colors=['#FF6B6B','#4ECDC4','#FFE66D','#A78BFA','#FB923C','#34D399','#60A5FA'];for(let i=0;i<50;i++){const c=document.createElement('div');c.className='confetti';c.style.left=Math.random()*100+'%';c.style.top=-(Math.random()*40)+'px';c.style.background=colors[Math.floor(Math.random()*colors.length)];c.style.animationDelay=Math.random()*0.8+'s';c.style.animationDuration=(1.5+Math.random()*2)+'s';el.appendChild(c);setTimeout(()=>c.remove(),3000);}}
+function showToast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2200);}
+function showSection(name){document.querySelectorAll('[id^="section-"]').forEach(el=>el.classList.add('hidden'));const sec=document.getElementById('section-'+name);if(sec)sec.classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'});if(name==='home')renderHome();}
+function resetProgress(){if(confirm('确定要重新开始学习计划吗？所有进度和星星都会清零。')){localStorage.removeItem('engV2');S=getStorage();currentPhonicsIdx=-1;document.getElementById('phonicsDetail').classList.remove('show');document.getElementById('dayCompleteBanner').classList.add('hidden');renderHome();showToast('🔄 已重新开始！');}}
+document.addEventListener('DOMContentLoaded',()=>{S=getStorage();S.streak=calcStreak();S.lastActive=TODAY;saveStorage(S);renderHome();renderPhonicsPage();renderVocabPage();});
+document.addEventListener('click',()=>{if(window.speechSynthesis){const u=new SpeechSynthesisUtterance('');u.volume=0;window.speechSynthesis.speak(u);}},{once:true});
+</script>
+</body>
+</html>
