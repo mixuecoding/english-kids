@@ -287,7 +287,7 @@ function showToast(msg){const t=document.createElement('div');t.className='toast
 function showSection(name){document.querySelectorAll('[id^="section-"]').forEach(el=>el.classList.add('hidden'));const sec=document.getElementById('section-'+name);if(sec)sec.classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'});if(name==='home')renderHome();}
 function resetProgress(){if(confirm('确定要重新开始学习计划吗？所有进度和星星都会清零。')){localStorage.removeItem('engV2');S=getStorage();currentPhonicsIdx=-1;document.getElementById('phonicsDetail').classList.remove('show');document.getElementById('dayCompleteBanner').classList.add('hidden');renderHome();showToast('🔄 已重新开始！');}}
 document.addEventListener('DOMContentLoaded',()=>{S=getStorage();S.streak=calcStreak();S.lastActive=TODAY;saveStorage(S);renderHome();renderPhonicsPage();renderVocabPage();});
-document.addEventListener('click',()=>{if(window.speechSynthesis){const u=new SpeechSynthesisUtterance('');u.volume=0;window.speechSynthesis.speak(u);}},{once:true});
+let speechReady=false;function initSpeech(){if(speechReady||!window.speechSynthesis)return;speechReady=true;const u=new SpeechSynthesisUtterance('');u.volume=0;window.speechSynthesis.cancel();window.speechSynthesis.speak(u);if(window.speechSynthesis.getVoices)window.speechSynthesis.getVoices();}document.addEventListener('click',initSpeech,{once:true});document.addEventListener('touchstart',initSpeech,{once:true});
 </script>
 </body>
 </html>
