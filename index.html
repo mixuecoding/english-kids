@@ -282,53 +282,10 @@ function answerQuiz(correctEn,btnEl){if(quizState.answered)return;quizState.answ
 function goBackFromQuiz(){showSection('home');}
 function speak(text,rate){
   return new Promise(function(resolve){
-    // Edge TTS — 国内可用，免费
-    var ssml='<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="en-US">'
-           +'<voice name="en-US-JennyNeural">'+text+'</voice></speak>';
-    var url='https://api-edge.cognitive.microsofttranslator.com/tts/v1/0/edge?format=audio-24khz-48kbit-mono-mp3';
-    // 先尝试 Edge TTS
-    tryEdge(url,ssml,resolve);
+    var a=new Audio("audio/"+text+".mp3");
+    a.playbackRate=rate||1;
+    a.onended=resolve;a.onerror=function(){resolve();};
+    a.play().catch(function(){resolve();});
   });
 }
 
-function tryEdge(url,ssml,resolve){
-  var xhr=new XMLHttpRequest();
-  xhr.open('POST',url,true);
-  xhr.responseType='blob';
-  xhr.setRequestHeader('Content-Type','application/ssml+xml');
-  xhr.setRequestHeader('User-Agent','Mozilla/5.0');
-  xhr.onload=function(){
-    if(xhr.status===200){
-      var blobUrl=URL.createObjectURL(xhr.response);
-      var a=new Audio(blobUrl);
-      a.playbackRate=0.85;
-      a.onended=function(){URL.revokeObjectURL(blobUrl);resolve();};
-      a.play().catch(function(){resolve();});
-    }else{
-      // 降级到 Google TTS
-      fallbackGoogle(text,resolve);
-    }
-  };
-  xhr.onerror=function(){fallbackGoogle(text,resolve);};
-  xhr.send(ssml);
-}
-
-function fallbackGoogle(text,resolve){
-  var url='https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=en&q='
-         +encodeURIComponent(text);
-  var a=new Audio(url);
-  a.playbackRate=0.85;
-  a.onended=resolve;
-  a.onerror=function(){resolve();};
-  a.play().catch(function(){resolve();});
-}
-addStars(n){S.stars=(S.stars||0)+n;saveStorage(S);document.getElementById('starCount').textContent=S.stars;if(n>=3)setTimeout(celebrate,200);}
-function celebrate(){const el=document.getElementById('celebration');const colors=['#FF6B6B','#4ECDC4','#FFE66D','#A78BFA','#FB923C','#34D399','#60A5FA'];for(let i=0;i<50;i++){const c=document.createElement('div');c.className='confetti';c.style.left=Math.random()*100+'%';c.style.top=-(Math.random()*40)+'px';c.style.background=colors[Math.floor(Math.random()*colors.length)];c.style.animationDelay=Math.random()*0.8+'s';c.style.animationDuration=(1.5+Math.random()*2)+'s';el.appendChild(c);setTimeout(()=>c.remove(),3000);}}
-function showToast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2200);}
-function showSection(name){document.querySelectorAll('[id^="section-"]').forEach(el=>el.classList.add('hidden'));const sec=document.getElementById('section-'+name);if(sec)sec.classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'});if(name==='home')renderHome();}
-function resetProgress(){if(confirm('确定要重新开始学习计划吗？所有进度和星星都会清零。')){localStorage.removeItem('engV2');S=getStorage();currentPhonicsIdx=-1;document.getElementById('phonicsDetail').classList.remove('show');document.getElementById('dayCompleteBanner').classList.add('hidden');renderHome();showToast('🔄 已重新开始！');}}
-document.addEventListener('DOMContentLoaded',()=>{S=getStorage();S.streak=calcStreak();S.lastActive=TODAY;saveStorage(S);renderHome();renderPhonicsPage();renderVocabPage();});
-let speechReady=false;function initSpeech(){if(speechReady||!window.speechSynthesis)return;speechReady=true;const u=new SpeechSynthesisUtterance('');u.volume=0;window.speechSynthesis.cancel();window.speechSynthesis.speak(u);if(window.speechSynthesis.getVoices)window.speechSynthesis.getVoices();}document.addEventListener('click',initSpeech,{once:true});document.addEventListener('touchstart',initSpeech,{once:true});
-</script>
-</body>
-</html>
